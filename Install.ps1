@@ -13,8 +13,6 @@ Get-ChildItem -Recurse `
 # Clean up
 Remove-Item .\ffmpeg\ffmpeg* -Recurse
 Remove-Item .\ffmpeg.zip
-# List the directory contents:
-#Get-ChildItem
 
 setx /m PATH "C:\ffmpeg\bin;%PATH%"
 
@@ -28,5 +26,3 @@ while("y","n" -notcontains $YesOrNo ){
               n{exit}
         default{write-warning "Invalid Input"}}
 }
-
-#https://adamtheautomator.com/install-ffmpeg/
