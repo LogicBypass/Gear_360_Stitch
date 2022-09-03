@@ -1,7 +1,9 @@
 <# 
-C - Width of interpolation band in degrees, must be smaller or equal than FOV "try from 6 to 11" 
+C - Width of interpolation band in degrees, must be smaller or equal than FOV "try from 6 to 11 for smoother stitch edge" 
 H - Half of the image width = height of input image after cropping
-FOV - field of view of the fisheye lenses in degrees, "try to play with it from 190 to 199"
+FOV - field of view of the fisheye lenses in degrees, "try to play with it from 190 to 199, Be sure to change all 7 of them!" 
+
+For debuging edges use "bgr24" instad of "gray8"
 #>
 
 $scriptpath = $MyInvocation.MyCommand.Definition 
