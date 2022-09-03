@@ -23,3 +23,9 @@ Average settings that I used for that apps:</br>
 
 
 ## PowerShell Script:
+
+
+
+## Best Preview app 
+I recommend to use Gopro VR Player V3 :
+https://gopro.com/downloads/PC/GoProVRPlayer/latest
