@@ -22,7 +22,7 @@ Average settings that I used for that apps:</br>
 </br>
 
 
-## PowerShell Script:
+## My PowerShell Script:
 
 ### First install of FFmpeg:
 To simplify the installation process of **FFmpeg** I created an Installation script.
