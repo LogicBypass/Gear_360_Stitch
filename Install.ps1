@@ -18,7 +18,6 @@ setx /m PATH "C:\ffmpeg\bin;%PATH%"
 
 Write-Host "Restart your PC to complete instalation"
 
-$input = Read-Host "Restart computer now [Y/n]"
 while("y","n" -notcontains $YesOrNo ){
     $input = Read-Host "Restart computer now [Y/n]"
     switch($input){
