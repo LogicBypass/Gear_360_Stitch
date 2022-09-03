@@ -23,9 +23,6 @@ Average settings that I used for that apps:</br>
 
 
 ## PowerShell Script:
-This script is set to work with Samsung 360 (2017) with Photo Size settings: 5792x2896
-
-Download "Install" and "PhotoStitch" files
 
 ### First install of FFmpeg:
 To simplify the installation process of **FFmpeg** I created an Installation script.
@@ -35,7 +32,7 @@ To simplify the installation process of **FFmpeg** I created an Installation scr
 3. Answer `[Y]Yes` to the installation questions.
 4. Restart your PC to complete the installation process.
 
-***The Installation only needs to be performed once***
+> ***The Installation only needs to be performed once***
 
 ### Usage:
 
@@ -43,8 +40,16 @@ To simplify the installation process of **FFmpeg** I created an Installation scr
 2. Drag and Drop this file `PhotoStitch` into the folder with your Photos.
 3. `Right Click` on it and select `Run with PowerShell`.
 
-***When the script will finish to stitch all photos it will automaticly exit, You will get aditional `mergemap` file remained from stitching process, you can delete it.***
+> ***When the script will finish to stitch all photos it will automaticly exit, You will get aditional `mergemap` file remained from stitching process, you can delete it.***
 
+### Advanced Script Modifications:
+`PhotoStitch` script is set to work with Samsung Gear 360 (2017) with Photo Size settings: 5792x2896</br>
+</br>
+If your photo has a different size change in the script the **2896** string with the **Height** of your photo</br>
+If you're getting bad edges after stitching change `gray8` to `bgr24` for a better view and try to play with `FOV` settings</br>
+> Atention! When you're changing FOV settings be sure to change **all 7** of them </br>
+
+</br>
 
 ## Best Preview app 
 I recommend using GoPro VR Player V3 :
