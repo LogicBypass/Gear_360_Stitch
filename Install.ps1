@@ -35,7 +35,12 @@ Get-ChildItem -Recurse `
 Remove-Item .\ffmpeg\ffmpeg* -Recurse
 Remove-Item .\ffmpeg.zip
 
-setx /m PATH "C:\ffmpeg\bin;%PATH%"
+[System.Environment]::SetEnvironmentVariable(
+    "PATH",
+    "C:\ffmpeg\bin;$([System.Environment]::GetEnvironmentVariable('PATH','MACHINE'))",
+    "Machine"
+)
+echo $env:PATH
 
 Write-Host "Restart your PC to complete instalation"
 
@@ -44,5 +49,5 @@ while("y","n" -notcontains $YesOrNo ){
     switch($input){
               y{Restart-computer -Force -Confirm:$false}
               n{exit}
-        default{write-warning "Invalid Input"}}
+        default{write-warning "Invalid Input, type Y for Yes and N for No"}}
 }
