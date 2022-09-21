@@ -32,7 +32,7 @@ $scriptpath = $MyInvocation.MyCommand.Definition
 [string]$dir = Split-Path $scriptpath  
 set-location $dir
 
-$files = Get-ChildItem "360*[0-9]."
+$files = Get-ChildItem "360*[0-9].*"
 
 foreach ($f in $files){
     $ext = [IO.Path]::GetExtension($f)
