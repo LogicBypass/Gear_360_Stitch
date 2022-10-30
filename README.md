@@ -35,6 +35,9 @@ To simplify the installation process of **FFmpeg** I created an Installation scr
 > ***The Installation only needs to be performed once***
 
 ### Usage:
+`PhotoStitch.ps1` - Is just for stitching Photos</br>
+`VideoStitch.ps1` - Is just for stitching Videos</br>
+`Photo-Video-Stitch.ps1` - Stitch Photos and Videos but may take a long time, try first with separated one</br>
 
 1. Download the `PhotoStitch` file.
 2. Drag and Drop this file `PhotoStitch` into the folder with your Photos.
