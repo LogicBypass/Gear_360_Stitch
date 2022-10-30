@@ -42,7 +42,7 @@ ffmpeg -f lavfi -i nullsrc=size=2048x2048 -vf "format=gray8,geq='clip(128-128/7*
 foreach ($f in $files){
     $out=(Get-Item $f ).Basename
     ffmpeg -hwaccel auto -i $f -i mergeVmap.png  -f lavfi -i color=black:s=2x2 -lavfi "[0]format=rgb24,split[L][R];
-    [L]crop=ih:iw/2:0:0,v360=input=fisheye:output=e:ih_fov=193:iv_fov=192[L_fov];
-    [R]crop=ih:iw/2:iw/2:0,v360=fisheye:e:yaw=180:ih_fov=195:iv_fov=194[R_fov];
+    [L]crop=ih:iw/2:0:0,v360=input=fisheye:output=e:ih_fov=192.5:iv_fov=193.5[L_fov];
+    [R]crop=ih:iw/2:iw/2:0,v360=fisheye:e:yaw=179:ih_fov=194:iv_fov=194[R_fov];
     [1]format=gbrp[fmt];[L_fov][R_fov][fmt]maskedmerge,overlay=shortest=1" -qp 13 -b:v 30M -b:a 192k -r 24 -y V.$out'_STITCHED'.MP4
     }
