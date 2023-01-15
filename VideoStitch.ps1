@@ -1,6 +1,5 @@
 <# 
 C - Width of interpolation band in degrees, must be smaller or equal than FOV "try from 6 to 11 for smoother stitch edge" 
-H - Half of the image width = height of input image after cropping
 
 FOV - field of view of the fisheye lenses in degrees, "try to play with it from 190 to 199, Be sure to change all 7 of them!" 
 FOV May not be the same for horizontal(ih_fov) / vertical position(iv_fov)
@@ -8,8 +7,6 @@ FOV ARE NOT EQUAL for Left and Right lenses, Left lens capture more info so FOV 
 
 For debuging edges use "bgr24" instad of "gray8"
 #>
-
-
 
 Write-Host "888                       d8b               888888b.                                                "
 Write-Host "888                       Y8P               888  .88b                                               "
@@ -28,16 +25,26 @@ Write-Host "Gear 360 Stitching Script"
 Write-Host "https://github.com/LogicBypass/Gear_360_Stitch"
 Write-Host ""
 Write-Host ""
-Start-Sleep 4
+Start-Sleep 3
 
 $scriptpath = $MyInvocation.MyCommand.Definition 
 [string]$dir = Split-Path $scriptpath  
 set-location $dir
 
 $files = Get-ChildItem "360*[0-9].MP4"
+$firstFile = $files[0]
+$height = (& ffprobe -v error -select_streams v:0 -show_entries stream=height -of default=nw=1 $firstFile.FullName).Split('=')[1]
+Write-Output $height
 
-<#                                H   H                                       C      FOV    H               H       H                                                  FOV        FOV #>       
-ffmpeg -f lavfi -i nullsrc=size=2048x2048 -vf "format=gray8,geq='clip(128-128/7*(180-195/(2048/2)*hypot(X-2048/2,Y-2048/2)),0,255)',v360=input=fisheye:output=e:ih_fov=195:iv_fov=195" -frames 1 -y mergeVmap.png
+
+
+
+$size = "$height"+"x"+"$height"
+Write-Output $size
+
+<#                                                                            C  FOV                                                                                        FOV        FOV #>       
+ffmpeg -f lavfi -i nullsrc=size=$size -vf "format=gray8,geq='clip(128-128/6*(180-195/($height/2)*hypot(X-$height/2,Y-$height/2)),0,255)',v360=input=fisheye:output=e:ih_fov=195:iv_fov=195" -frames 1 -y mergeVmap.png
+
 
 foreach ($f in $files){
     $out=(Get-Item $f ).Basename
@@ -46,3 +53,4 @@ foreach ($f in $files){
     [R]crop=ih:iw/2:iw/2:0,v360=fisheye:e:yaw=179:ih_fov=194:iv_fov=194[R_fov];
     [1]format=gbrp[fmt];[L_fov][R_fov][fmt]maskedmerge,overlay=shortest=1" -qp 13 -b:v 30M -b:a 192k -r 24 -y V.$out'_STITCHED'.MP4
     }
+Remove-Item mergeVmap.png -Force

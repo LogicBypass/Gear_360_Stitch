@@ -1,6 +1,5 @@
 <# 
 C - Width of interpolation band in degrees, must be smaller or equal than FOV "try from 6 to 11 for smoother stitch edge" 
-H - Half of the image width = height of input image after cropping
 
 FOV - field of view of the fisheye lenses in degrees, "try to play with it from 190 to 199, Be sure to change all 7 of them!" 
 FOV May not be the same for horizontal(ih_fov) / vertical position(iv_fov)
@@ -26,7 +25,7 @@ Write-Host "Gear 360 Stitching Script"
 Write-Host "https://github.com/LogicBypass/Gear_360_Stitch"
 Write-Host ""
 Write-Host ""
-Start-Sleep 4
+Start-Sleep 3
 
 $scriptpath = $MyInvocation.MyCommand.Definition 
 [string]$dir = Split-Path $scriptpath  
@@ -38,18 +37,31 @@ foreach ($f in $files){
     $ext = [IO.Path]::GetExtension($f)
     $out=(Get-Item $f ).Basename
     if ($ext -eq ".jpg" ){
-        <#                                H   H                                       C      FOV    H               H       H                                                  FOV        FOV #>       
-        ffmpeg -f lavfi -i nullsrc=size=2896x2896 -vf "format=gray8,geq='clip(128-128/6*(180-195/(2896/2)*hypot(X-2896/2,Y-2896/2)),0,255)',v360=input=fisheye:output=e:ih_fov=195:iv_fov=195" -frames 1 -y mergePmap.png
-        ffmpeg -i $f -i mergePmap.png -lavfi "[0]crop=h=2896:y=0,format=rgb24,split[L][R];
+        $firstFile = $f[0]
+        $height = (& ffprobe -v error -select_streams v:0 -show_entries stream=height -of default=nw=1 $firstFile.FullName).Split('=')[1]
+        Write-Output $height
+        $size = "$height"+"x"+"$height"
+        Write-Output $size
+        
+        ffmpeg -f lavfi -i nullsrc=size=$size -vf "format=gray8,geq='clip(128-128/6*(180-195/($height/2)*hypot(X-$height/2,Y-$height/2)),0,255)',v360=input=fisheye:output=e:ih_fov=195:iv_fov=195" -frames 1 -y mergePmap.png
+        ffmpeg -i $f -i mergePmap.png -lavfi "[0]crop=h='$height':y=0,format=rgb24,split[L][R];
         [L]crop=ih:iw/2:0:0,v360=input=fisheye:output=e:ih_fov=192.5:iv_fov=193.5[L_fov];
         [R]crop=ih:iw/2:iw/2:0,v360=input=fisheye:output=e:yaw=179:ih_fov=194:iv_fov=194[R_fov];[1]format=gbrp[fmt];
         [L_fov][R_fov][fmt]maskedmerge" -y $out'_STITCHED'.jpg
         }
     else {
-        ffmpeg -f lavfi -i nullsrc=size=2048x2048 -vf "format=gray8,geq='clip(128-128/8*(180-195/(2048/2)*hypot(X-2048/2,Y-2048/2)),0,255)',v360=input=fisheye:output=e:ih_fov=195:iv_fov=194" -frames 1 -y mergeVmap.png
+        $firstFile = $f[0]
+        $height = (& ffprobe -v error -select_streams v:0 -show_entries stream=height -of default=nw=1 $firstFile.FullName).Split('=')[1]
+        Write-Output $height
+        $size = "$height"+"x"+"$height"
+        Write-Output $size
+
+        ffmpeg -f lavfi -i nullsrc=size=$size -vf "format=gray8,geq='clip(128-128/6*(180-195/($height/2)*hypot(X-$height/2,Y-$height/2)),0,255)',v360=input=fisheye:output=e:ih_fov=195:iv_fov=195" -frames 1 -y mergeVmap.png
         ffmpeg -hwaccel auto -i $f -i mergeVmap.png  -f lavfi -i color=black:s=2x2 -lavfi "[0]format=rgb24,split[L][R];
         [L]crop=ih:iw/2:0:0,v360=input=fisheye:output=e:ih_fov=192.5:iv_fov=193.5[L_fov];
         [R]crop=ih:iw/2:iw/2:0,v360=fisheye:e:yaw=179:ih_fov=194:iv_fov=194[R_fov];
         [1]format=gbrp[fmt];[L_fov][R_fov][fmt]maskedmerge,overlay=shortest=1" -qp 13 -b:v 30M -b:a 192k -r 24 -y $out'_STITCHED'.MP4
         }
     }
+Remove-Item mergeVmap.png -Force
+Remove-Item mergePmap.png -Force
