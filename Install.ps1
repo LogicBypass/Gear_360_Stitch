@@ -25,7 +25,7 @@ Write-Host ""
 Start-Sleep 3
 
 New-Item -Type Directory -Path C:\ffmpeg ; Set-Location C:\ffmpeg
-curl.exe -L 'https://www.gyan.dev/ffmpeg/builds/ffmpeg-release-essentials.zip' -o 'ffmpeg.zip'
+curl 'https://www.gyan.dev/ffmpeg/builds/ffmpeg-release-essentials.zip' -o 'ffmpeg.zip'
 # Expand the Zip
 Expand-Archive .\ffmpeg.zip -Force -Verbose
 # Move the executable (*.exe) files to the top folder
